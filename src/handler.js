@@ -1,15 +1,17 @@
 'use strict';
 
-const { getNearPlaces } = require('./map-api.js');
+const { getNearPlaces } = require('./map-api.js'),
+  headers = {
+    "Access-Control-Allow-Origin": "https://zooman090.github.io" 
+  };
 
-module.exports.map = (event, context, callback) => {
-  getNearPlaces()
+module.exports.map = ({ queryStringParameters }, context, callback) => {
+  getNearPlaces(queryStringParameters)
     .then(result => {
       const response = {
         statusCode: 200,
-        body: JSON.stringify({
-          result
-        }),
+        headers,
+        body: JSON.stringify(result),
       };
 
       callback(null, response);
@@ -17,9 +19,8 @@ module.exports.map = (event, context, callback) => {
     .catch(error => {
       const response = {
         statusCode: 500,
-        body: JSON.stringify({
-          error
-        }),
+        headers,
+        body: JSON.stringify(error),
       };
 
       callback(null, response);
